@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POAP2RSS</title>
+  <meta name="description" content="POAP2RSS provides RSS feeds for POAP events so you can subscribe to claim activity in any feed reader or automation platform." />
+  <meta property="og:title" content="POAP2RSS" />
+  <meta property="og:description" content="Turn POAP event activity into a live RSS feed you can use anywhere." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://poap2rss.com" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #222;
+    }
+    header {
+      background: #5c4df3;
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    main {
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    a {
+      color: #5c4df3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>POAP2RSS</h1>
+    <p>Subscribe to POAP events using RSS. Simple, open, and automation-friendly.</p>
+  </header>
+  <main>
+    <h2>What is POAP2RSS?</h2>
+    <p>
+      POAP2RSS is a free service that turns any <a href="https://poap.xyz">POAP</a> event into a standard <strong>RSS feed</strong>.
+      It lets event organizers, collectors, and community builders monitor claim activity in real time — using feed readers or automation platforms like Zapier and IFTTT. Created by <a href="https://www.thingelstad.com">Jamie Thingelstad</a> aka <a href="https://collectors.poap.xyz/scan/poap.thingelstad.eth">poap.thingelstad.eth</a>.
+    </p>
+
+    <h2>How to Use It</h2>
+    <p>
+      Each POAP event has an event ID. To get the RSS feed for any event, just use:
+    </p>
+    <pre><code>https://app.poap2rss.com/event/{event_id}</code></pre>
+    <p>Replace <code>{event_id}</code> with the actual POAP event ID.</p>
+    <p>Example:</p>
+    <pre><code>https://app.poap2rss.com/event/190897</code></pre>
+    <p>
+      You can paste this link into any feed reader (like Feedly or NetNewsWire), or connect it to an automation tool.
+    </p>
+
+    <p>You can even subscribe to a users collection, just use:</p>
+    <pre><code>https://app.poap2rss.com/address/{address}</code></pre>
+    <p>Repalce <code>{address}</code> with an actual address or ENS name.</p>
+    <p>Example:</p>
+    <pre><code>https://app.poap2rss.com/address/poap.thingelstad.eth</code></pre>
+
+    <h2>What the Feed Includes</h2>
+    <ul>
+      <li>🔄 The 20 most recent POAP claims</li>
+      <li>📅 Timestamped using the claim time</li>
+      <li>👤 Includes ENS name or wallet address as the author</li>
+      <li>🖼 First item shows the POAP event description and badge</li>
+      <li>⏰ Weekly inactivity notices if no one claims a POAP</li>
+    </ul>
+
+    <h2>Who Is It For?</h2>
+    <ul>
+      <li>✅ Event creators — see who’s claiming your POAPs</li>
+      <li>✅ Fans and collectors — follow your favorite events</li>
+      <li>✅ Builders — trigger automations on new claims</li>
+    </ul>
+
+    <h2>More Info</h2>
+    <p>
+      POAP2RSS is open-source and built with ❤️ to make POAPs more accessible and programmable.
+      You can view the code on <a href="https://github.com/jthingelstad/POAP2RSS">GitHub</a>.
+    </p>
+  </main>
+  <footer>
+    <p>Not affiliated with POAP Inc.</p>
+  </footer>
+
+  <script defer data-domain="poap2rss.com" src="https://plausible.io/js/script.js"></script>
+  
+</body>
+</html>
