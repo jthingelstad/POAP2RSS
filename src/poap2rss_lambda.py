@@ -281,13 +281,19 @@ class RSSFeedGenerator:
         ens_name = self._get_ens_name(address)
         display_name = ens_name if ens_name else f"{address[:6]}...{address[-4:]}"
         
-        SubElement(channel, 'title').text = f"{display_name} -- POAP Collection Feed"
-        SubElement(channel, 'description').text = f"Latest POAP collections for {display_name}. Subscribe to see new POAPs collected by this address."
+        SubElement(channel, 'title').text = f"POAP: {display_name} Collection"
+        SubElement(channel, 'description').text = f"Latest POAP tokens for {display_name}."
         SubElement(channel, 'link').text = f"https://collectors.poap.xyz/scan/{address}"
         SubElement(channel, 'language').text = 'en-us'
         SubElement(channel, 'lastBuildDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
         SubElement(channel, 'generator').text = 'POAP2RSS/1.0'
     
+        # Add atom:link for self-reference
+        atom_link = SubElement(channel, 'atom:link')
+        atom_link.set('href', f"https://app.poap2rss.com/address/{address}")
+        atom_link.set('rel', 'self')
+        atom_link.set('type', 'application/rss+xml')
+
     def _add_event_description_item(self, channel: Element, event_details: Dict):
         """Add initial event description item"""
         item = SubElement(channel, 'item')
