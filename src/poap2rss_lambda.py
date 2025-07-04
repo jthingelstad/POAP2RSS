@@ -371,11 +371,9 @@ class RSSFeedGenerator:
         SubElement(item, 'author').text = f"{display_name} ({owner_address})"
         
         description = f"""
-        <div>
-            <p><strong>{display_name}</strong> claimed a POAP for <em>{event_details.get('name', 'Unknown Event')}</em></p>
-            <p><strong>Address:</strong> {owner_address}</p>
-            <p><strong>Token ID:</strong> {token_id}</p>
-        </div>
+        <p><strong><a href="https://collectors.poap.xyz/scan/{display_name}">{display_name}</a></strong> 
+        claimed POAP <a href="https://collectors.poap.xyz/token/{token_id}">{token_id}</a> for 
+        <strong>{event_details.get('name', 'Unknown Event')}</strong></p>
         """
         
         SubElement(item, 'description').text = description
