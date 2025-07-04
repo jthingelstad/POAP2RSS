@@ -28,7 +28,7 @@ POAP_CLIENT_SECRET = os.environ.get('POAP_CLIENT_SECRET')
 # Cache configuration
 CACHE_DURATION_MINUTES = 15
 MAX_CLAIMS_COUNT = 20
-INACTIVITY_THRESHOLD_WEEKS = 4
+INACTIVITY_THRESHOLD_WEEKS = int(os.environ.get('INACTIVITY_THRESHOLD_WEEKS', '4'))  # Allow override for testing
 
 class POAPAPIClient:
     """POAP API client with authentication and rate limiting"""
@@ -436,6 +436,7 @@ class RSSFeedGenerator:
     def _check_and_add_inactivity_alert(self, channel: Element, event_details: Dict, poaps: List[Dict]):
         """Check for inactivity and add alert if needed"""
         if not poaps:
+            logger.info("No POAPs found, skipping inactivity check")
             return
         
         # Get the most recent claim date
@@ -462,12 +463,23 @@ class RSSFeedGenerator:
                     continue
         
         if most_recent_claim is None:
+            logger.warning("No valid claim dates found, skipping inactivity check")
             return
         
-        # Check if it's been more than 4 weeks since last claim
-        weeks_since_last_claim = (datetime.now(timezone.utc) - most_recent_claim).days // 7
+        # Calculate weeks since last claim
+        now = datetime.now(timezone.utc)
+        time_diff = now - most_recent_claim
+        weeks_since_last_claim = time_diff.days // 7
         
+        logger.info(f"Most recent claim: {most_recent_claim}")
+        logger.info(f"Current time: {now}")
+        logger.info(f"Days since last claim: {time_diff.days}")
+        logger.info(f"Weeks since last claim: {weeks_since_last_claim}")
+        logger.info(f"Inactivity threshold: {INACTIVITY_THRESHOLD_WEEKS} weeks")
+        
+        # Check if it's been more than the threshold weeks since last claim
         if weeks_since_last_claim >= INACTIVITY_THRESHOLD_WEEKS:
+            logger.info(f"Adding inactivity alert for {weeks_since_last_claim} weeks")
             item = SubElement(channel, 'item')
             
             if weeks_since_last_claim == INACTIVITY_THRESHOLD_WEEKS:
@@ -480,12 +492,16 @@ class RSSFeedGenerator:
             <div>
                 <p>There have been no new POAP claims for this event in {weeks_since_last_claim} weeks.</p>
                 <p>The event may be over. Consider unsubscribing from this feed if no further activity is expected.</p>
+                <p><em>Last claim was on {most_recent_claim.strftime('%Y-%m-%d %H:%M:%S UTC')}</em></p>
             </div>
             """
             
             # Use unique GUID for each week to ensure new notifications
             SubElement(item, 'guid').text = f"inactivity-{event_details.get('id', 'unknown')}-week-{weeks_since_last_claim}"
             SubElement(item, 'pubDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
+        else:
+            logger.info(f"No inactivity alert needed (only {weeks_since_last_claim} weeks since last claim)")
+    
     
     def _get_ens_name(self, address: str) -> Optional[str]:
         """Get ENS name for an address (simplified - would need proper ENS resolution)"""
