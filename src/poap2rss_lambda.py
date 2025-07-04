@@ -300,7 +300,6 @@ class RSSFeedGenerator:
         
         event_name = event_details.get('name', 'Unknown Event')
         event_description = event_details.get('description', 'No description available')
-        event_date = event_details.get('start_date', event_details.get('created_date'))
         
         SubElement(item, 'title').text = f"{event_name} -- POAP Event Details"
         
@@ -326,13 +325,36 @@ class RSSFeedGenerator:
         SubElement(item, 'guid').text = f"event-{event_details.get('id', 'unknown')}-description"
         SubElement(item, 'link').text = f"https://poap.gallery/drops/{event_details.get('id', 'unknown')}"
         
-        # Use event date for timestamp
-        if event_date:
-            try:
-                event_datetime = datetime.fromisoformat(event_date.replace('Z', '+00:00'))
-                SubElement(item, 'pubDate').text = formatdate(timeval=event_datetime.timestamp(), localtime=False, usegmt=True)
-            except ValueError:
-                SubElement(item, 'pubDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
+        # Use event date for timestamp - try multiple possible date fields
+        event_timestamp = None
+        
+        # Try different date fields that might be in the event details
+        for date_field in ['start_date', 'end_date', 'event_date', 'created_date', 'expiry_date']:
+            if event_details.get(date_field):
+                try:
+                    date_str = event_details[date_field]
+                    # Handle different date formats
+                    if date_str.endswith('Z'):
+                        event_datetime = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                    elif '+' in date_str:
+                        event_datetime = datetime.fromisoformat(date_str)
+                    else:
+                        # Assume UTC if no timezone info
+                        event_datetime = datetime.fromisoformat(date_str).replace(tzinfo=timezone.utc)
+                    
+                    event_timestamp = event_datetime.timestamp()
+                    logger.info(f"Using {date_field} for event timestamp: {date_str}")
+                    break
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"Could not parse {date_field} '{date_str}': {e}")
+                    continue
+        
+        # If no valid event date found, use current time as fallback
+        if event_timestamp is None:
+            logger.warning("No valid event date found, using current time")
+            event_timestamp = time.time()
+        
+        SubElement(item, 'pubDate').text = formatdate(timeval=event_timestamp, localtime=False, usegmt=True)
     
     def _add_claim_item(self, channel: Element, poap: Dict, event_details: Dict):
         """Add RSS item for a POAP claim"""
