@@ -412,6 +412,7 @@ class RSSFeedGenerator:
         
         event_name = poap.get('event', {}).get('name', 'Unknown Event')
         event_id = poap.get('event', {}).get('id', 'unknown')
+        event_image_url = poap.get('event', {}).get('image_url', 'unknown')
         
         SubElement(item, 'title').text = f"Collected {event_name}"
         SubElement(item, 'author').text = address
@@ -419,7 +420,7 @@ class RSSFeedGenerator:
         description = f"""
         <div>
             <p>Collected POAP <a href="https://collectors.poap.xyz/token/{poap.get('tokenId', 'unknown')}">{poap.get('tokenId', 'unknown')}</a> for <strong><a href="https://poap.gallery/drops/{event_id}">{event_name}</a></strong>.</p>
-            <p><img src="{event_details["image_url"]}" alt="POAP Badge" style="max-width: 500px;" /></p>
+            <p><img src="{event_image_url}" alt="POAP Badge" style="max-width: 500px;" /></p>
         </div>
         """
         
