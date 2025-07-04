@@ -372,7 +372,7 @@ class RSSFeedGenerator:
         description = f"""
         <p><strong><a href="https://collectors.poap.xyz/scan/{owner_address}">{display_name}</a></strong>
         claimed POAP <a href="https://collectors.poap.xyz/token/{token_id}">{token_id}</a> for 
-        <strong><a href="https://collectors.poap.xyz/token/{event_details.get('id', 'Unknown Event')}">{event_details.get('name', 'Unknown Event')}</a></strong></p>
+        <strong><a href="https://poap.gallery/drops/{event_details.get('id', 'Unknown Event')}">{event_details.get('name', 'Unknown Event')}</a></strong></p>
         <p><img src="{event_details["image_url"]}" /></p>
         """
         
