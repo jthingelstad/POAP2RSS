@@ -9,36 +9,36 @@
   <meta property="og:description" content="Turn POAP event activity into a live RSS feed you can use anywhere." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://poap2rss.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
   <style>
     body {
       font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 0;
       background: #f9f9f9;
-      color: #222;
+      color: #333;
     }
     header {
       background: #5c4df3;
-      color: white;
-      padding: 2rem 1rem;
+      color: #fff;
+      padding: 2rem 0;
       text-align: center;
     }
-    main {
-      max-width: 720px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    h1, h2 {
-      color: #333;
+    main.content {
+      margin-top: 2rem;
+      max-width: 700px;
     }
     pre {
-      background: #eee;
+      background: #f4f4f4;
       padding: 1rem;
       overflow-x: auto;
+      border-radius: 4px;
+    }
+    ul {
+      margin-left: 1.5rem;
     }
     footer {
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 2rem 0;
       color: #666;
       font-size: 0.9rem;
     }
@@ -49,10 +49,12 @@
 </head>
 <body>
   <header>
-    <h1>POAP2RSS</h1>
-    <p>Subscribe to POAP events using RSS. Simple, open, and automation-friendly.</p>
+    <div class="container">
+      <h1>POAP2RSS</h1>
+      <p>Subscribe to POAP events using RSS. Simple, open, and automation-friendly.</p>
+    </div>
   </header>
-  <main>
+  <main class="container content">
     <h2>What is POAP2RSS?</h2>
     <p>
       POAP2RSS is a free service that turns any <a href="https://poap.xyz">POAP</a> event into a standard <strong>RSS feed</strong>.
@@ -71,9 +73,9 @@
       You can paste this link into any feed reader (like Feedly or NetNewsWire), or connect it to an automation tool.
     </p>
 
-    <p>You can even subscribe to a users collection, just use:</p>
+    <p>You can even subscribe to a user's collection, just use:</p>
     <pre><code>https://app.poap2rss.com/address/{address}</code></pre>
-    <p>Repalce <code>{address}</code> with an actual address or ENS name.</p>
+    <p>Replace <code>{address}</code> with an actual address or ENS name.</p>
     <p>Example:</p>
     <pre><code>https://app.poap2rss.com/address/poap.thingelstad.eth</code></pre>
 
@@ -100,7 +102,9 @@
     </p>
   </main>
   <footer>
-    <p>Not affiliated with POAP Inc.</p>
+    <div class="container">
+      <p>Not affiliated with POAP Inc.</p>
+    </div>
   </footer>
 
   <script defer data-domain="poap2rss.com" src="https://plausible.io/js/script.js"></script>
