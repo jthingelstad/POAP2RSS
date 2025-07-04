@@ -262,8 +262,8 @@ class RSSFeedGenerator:
         event_name = event_details.get('name', 'Unknown Event')
         event_id = event_details.get('id', 'unknown')
         
-        SubElement(channel, 'title').text = f"POAP Claims -- {event_name} (ID #{event_id})"
-        SubElement(channel, 'description').text = f"Latest POAP claim notifications for {event_name}. Subscribe to know when attendees claim their POAP badges."
+        SubElement(channel, 'title').text = f"POAP: {event_name}"
+        SubElement(channel, 'description').text = f"Acvitity for {event_name} POAP drop."
         SubElement(channel, 'link').text = f"https://poap.gallery/drops/{event_id}"
         SubElement(channel, 'language').text = 'en-us'
         SubElement(channel, 'lastBuildDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
@@ -274,13 +274,7 @@ class RSSFeedGenerator:
         atom_link.set('href', f"https://app.poap2rss.com/event/{event_id}")
         atom_link.set('rel', 'self')
         atom_link.set('type', 'application/rss+xml')
-        
-        # Add atom:link for self-reference
-        atom_link = SubElement(channel, 'atom:link')
-        atom_link.set('href', f"https://app.poap2rss.com/event/{event_id}")
-        atom_link.set('rel', 'self')
-        atom_link.set('type', 'application/rss+xml')
-    
+            
     def _add_address_channel_metadata(self, channel: Element, address: str):
         """Add RSS channel metadata for address feeds"""
         # Try to get ENS name for the address
