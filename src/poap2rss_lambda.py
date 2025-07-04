@@ -369,8 +369,8 @@ class RSSFeedGenerator:
         token_id = poap.get('id', 'unknown')  # This is the token ID in the API response
 
         # Item content
-        SubElement(item, 'title').text = f"POAP claimed by {display_name}"
-        SubElement(item, 'author').text = f"{display_name} ({owner_address})"
+        SubElement(item, 'title').text = f""
+        SubElement(item, 'author').text = f"{display_name}"
         
         description = f"""
         <p><strong><a href="https://collectors.poap.xyz/scan/{owner_address}">{display_name}</a></strong>
@@ -414,7 +414,7 @@ class RSSFeedGenerator:
         event_id = poap.get('event', {}).get('id', 'unknown')
         event_image_url = poap.get('event', {}).get('image_url', 'unknown')
         
-        SubElement(item, 'title').text = f"Collected {event_name}"
+        SubElement(item, 'title').text = f""
         SubElement(item, 'author').text = address
         
         description = f"""
