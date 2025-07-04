@@ -10,6 +10,14 @@ from xml.dom import minidom
 from botocore.exceptions import ClientError
 import time
 from typing import Dict, List, Optional, Any
+import html
+
+try:
+    from xml.etree.ElementTree import CDATA  # type: ignore
+except ImportError:  # pragma: no cover - Python < 3.9 compatibility
+    class CDATA(str):
+        """Fallback CDATA representation for older Python versions."""
+        pass
 
 # Configure logging
 logger = logging.getLogger()
@@ -321,7 +329,8 @@ class RSSFeedGenerator:
         
         description_html += "</div>"
         
-        SubElement(item, 'description').text = description_html
+        description_elem = SubElement(item, 'description')
+        description_elem.text = CDATA(description_html)
         SubElement(item, 'guid').text = f"event-{event_details.get('id', 'unknown')}-description"
         SubElement(item, 'link').text = f"https://poap.gallery/drops/{event_details.get('id', 'unknown')}"
         
@@ -376,7 +385,8 @@ class RSSFeedGenerator:
         <strong>{event_details.get('name', 'Unknown Event')}</strong></p>
         """
         
-        SubElement(item, 'description').text = description
+        description_elem = SubElement(item, 'description')
+        description_elem.text = CDATA(description)
         SubElement(item, 'guid').text = f"claim-{token_id}"
         SubElement(item, 'link').text = f"https://poap.gallery/token/{token_id}"
         
@@ -420,7 +430,8 @@ class RSSFeedGenerator:
         </div>
         """
         
-        SubElement(item, 'description').text = description
+        description_elem = SubElement(item, 'description')
+        description_elem.text = CDATA(description)
         SubElement(item, 'guid').text = f"address-{address}-token-{poap.get('tokenId', 'unknown')}"
         SubElement(item, 'link').text = f"https://poap.gallery/token/{poap.get('tokenId', '')}"
         
@@ -511,6 +522,16 @@ class RSSFeedGenerator:
         """Format XML with proper indentation"""
         rough_string = tostring(root, encoding='unicode')
         parsed = minidom.parseString(rough_string)
+
+        # Convert <description> contents back to CDATA sections
+        for desc in parsed.getElementsByTagName('description'):
+            if desc.childNodes:
+                text = ''.join(node.data for node in desc.childNodes)
+                text = html.unescape(text)
+                for child in list(desc.childNodes):
+                    desc.removeChild(child)
+                desc.appendChild(parsed.createCDATASection(text))
+
         return parsed.toprettyxml(indent='  ', encoding='utf-8').decode('utf-8')
 
 def lambda_handler(event, context):
