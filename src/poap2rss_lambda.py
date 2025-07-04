@@ -271,7 +271,7 @@ class RSSFeedGenerator:
         event_id = event_details.get('id', 'unknown')
         
         SubElement(channel, 'title').text = f"POAP: {event_name}"
-        SubElement(channel, 'description').text = f"Acvitity for {event_name} POAP drop."
+        SubElement(channel, 'description').text = f"Activity for {event_name} POAP drop."
         SubElement(channel, 'link').text = f"https://poap.gallery/drops/{event_id}"
         SubElement(channel, 'language').text = 'en-us'
         SubElement(channel, 'lastBuildDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
