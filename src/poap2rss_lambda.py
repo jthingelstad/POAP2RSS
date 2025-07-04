@@ -228,13 +228,6 @@ class RSSFeedGenerator:
         if poaps:
             for poap in poaps:
                 self._add_claim_item(channel, poap, event_details)
-        else:
-            # Add a message if no POAPs found
-            item = SubElement(channel, 'item')
-            SubElement(item, 'title').text = "No POAP claims found"
-            SubElement(item, 'description').text = "This event has no POAP claims yet, or the claims are not publicly accessible."
-            SubElement(item, 'guid').text = f"no-claims-{event_id}"
-            SubElement(item, 'pubDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
         
         # Check for inactivity and add alert if needed
         self._check_and_add_inactivity_alert(channel, event_details, poaps)
@@ -309,7 +302,7 @@ class RSSFeedGenerator:
         event_name = event_details.get('name', 'Unknown Event')
         event_description = event_details.get('description', 'No description available')
         
-        SubElement(item, 'title').text = f"{event_name} -- POAP Event Details"
+        SubElement(item, 'title').text = f"{event_name} Event Details"
         
         # Create description with event details
         description_html = f"""
@@ -319,7 +312,7 @@ class RSSFeedGenerator:
         """
         
         if event_details.get('image_url'):
-            description_html += f'<img src="{event_details["image_url"]}" alt="POAP Badge" style="max-width: 200px;" />'
+            description_html += f'<img src="{event_details["image_url"]}" alt="POAP Badge" style="max-width: 500px;" />'
         
         if event_details.get('city'):
             description_html += f"<p><strong>Location:</strong> {event_details['city']}"
@@ -374,7 +367,7 @@ class RSSFeedGenerator:
         ens_name = poap.get('owner', {}).get('ens', '')
         display_name = ens_name if ens_name else f"{owner_address[:6]}...{owner_address[-4:]}"
         token_id = poap.get('id', 'unknown')  # This is the token ID in the API response
-        
+
         # Item content
         SubElement(item, 'title').text = f"POAP claimed by {display_name}"
         SubElement(item, 'author').text = f"{display_name} ({owner_address})"
@@ -382,12 +375,13 @@ class RSSFeedGenerator:
         description = f"""
         <p><strong><a href="https://collectors.poap.xyz/scan/{owner_address}">{display_name}</a></strong>
         claimed POAP <a href="https://collectors.poap.xyz/token/{token_id}">{token_id}</a> for 
-        <strong>{event_details.get('name', 'Unknown Event')}</strong></p>
+        <strong><a href="https://collectors.poap.xyz/token/{event_details.get('id', 'Unknown Event')}">{event_details.get('name', 'Unknown Event')}</a></strong></p>
+        <p><img src="{event_details["image_url"]}" alt="POAP Badge" style="max-width: 500px;" /></p>
         """
         
         description_elem = SubElement(item, 'description')
         description_elem.text = CDATA(description)
-        SubElement(item, 'guid').text = f"claim-{token_id}"
+        SubElement(item, 'guid').text = f"https://poap.gallery/token/{token_id}"
         SubElement(item, 'link').text = f"https://poap.gallery/token/{token_id}"
         
         # Use creation date for timestamp with proper timezone handling
@@ -419,21 +413,20 @@ class RSSFeedGenerator:
         event_name = poap.get('event', {}).get('name', 'Unknown Event')
         event_id = poap.get('event', {}).get('id', 'unknown')
         
-        SubElement(item, 'title').text = f"Collected POAP: {event_name}"
+        SubElement(item, 'title').text = f"Collected {event_name}"
         SubElement(item, 'author').text = address
         
         description = f"""
         <div>
-            <p>Collected POAP for <strong>{event_name}</strong></p>
-            <p><strong>Event ID:</strong> {event_id}</p>
-            <p><strong>Token ID:</strong> {poap.get('tokenId', 'unknown')}</p>
+            <p>Collected POAP <a href="https://collectors.poap.xyz/token/{poap.get('tokenId', 'unknown')}">{poap.get('tokenId', 'unknown')}</a> for <strong><a href="https://poap.gallery/drops/{event_id}">{event_name}</a></strong>.</p>
+            <p><img src="{event_details["image_url"]}" alt="POAP Badge" style="max-width: 500px;" /></p>
         </div>
         """
         
         description_elem = SubElement(item, 'description')
         description_elem.text = CDATA(description)
-        SubElement(item, 'guid').text = f"address-{address}-token-{poap.get('tokenId', 'unknown')}"
-        SubElement(item, 'link').text = f"https://poap.gallery/token/{poap.get('tokenId', '')}"
+        SubElement(item, 'guid').text = f"https://collectors.poap.xyz/token/{poap.get('tokenId', '')}"
+        SubElement(item, 'link').text = f"https://collectors.poap.xyz/token/{poap.get('tokenId', '')}"
         
         if poap.get('created'):
             try:
@@ -492,7 +485,7 @@ class RSSFeedGenerator:
             item = SubElement(channel, 'item')
             
             if weeks_since_last_claim == INACTIVITY_THRESHOLD_WEEKS:
-                title = f"No POAP claims in the last {weeks_since_last_claim} weeks -- the event may be over"
+                title = f"No POAP claims in the last {weeks_since_last_claim} weeks."
             else:
                 title = f"{weeks_since_last_claim} weeks with no claims"
             
