@@ -378,8 +378,8 @@ class RSSFeedGenerator:
         
         description_elem = SubElement(item, 'description')
         description_elem.text = CDATA(description)
-        SubElement(item, 'guid').text = f"https://poap.gallery/token/{token_id}"
-        SubElement(item, 'link').text = f"https://poap.gallery/token/{token_id}"
+        SubElement(item, 'guid').text = f"https://collectors.poap.xyz/token/{token_id}"
+        SubElement(item, 'link').text = f"https://collectors.poap.xyz/token/{token_id}"
         
         # Use creation date for timestamp with proper timezone handling
         if poap.get('created'):
