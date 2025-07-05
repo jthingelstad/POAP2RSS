@@ -311,7 +311,7 @@ class RSSFeedGenerator:
         """
         
         if event_details.get('image_url'):
-            description_html += f'<img src="{event_details["image_url"]}" />'
+            description_html += f'<img src="{event_details["image_url"]}" width="500" height="500" />'
         
         if event_details.get('city'):
             description_html += f"<p><strong>Location:</strong> {event_details['city']}"
@@ -373,7 +373,7 @@ class RSSFeedGenerator:
         <p><strong><a href="https://collectors.poap.xyz/scan/{owner_address}">{display_name}</a></strong>
         claimed POAP <a href="https://collectors.poap.xyz/token/{token_id}">{token_id}</a> for 
         <strong><a href="https://poap.gallery/drops/{event_details.get('id', 'Unknown Event')}">{event_details.get('name', 'Unknown Event')}</a></strong></p>
-        <p><img src="{event_details["image_url"]}" /></p>
+        <p><img src="{event_details["image_url"]}" width="500" height="500" /></p>
         """
         
         description_elem = SubElement(item, 'description')
@@ -416,7 +416,7 @@ class RSSFeedGenerator:
         
         description = f"""
         <p>Collected POAP <a href="https://collectors.poap.xyz/token/{poap.get('tokenId', 'unknown')}">{poap.get('tokenId', 'unknown')}</a> for <strong><a href="https://poap.gallery/drops/{event_id}">{event_name}</a></strong>.</p>
-        <p><img src="{event_image_url}" /></p>
+        <p><img src="{event_image_url}" width="500" height="500" /></p>
         """
         
         description_elem = SubElement(item, 'description')
