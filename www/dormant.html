@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POAP Event Inactivity - POAP2RSS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.15)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.15)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.15)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #4c51bf;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #553c9a;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            font-weight: 600;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3);
+        }
+
+        .highlight-box h3 {
+            color: white;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-left: 5px solid #4c51bf;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .action-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .action-list li {
+            background: #f7fafc;
+            margin: 10px 0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4c51bf;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .action-list li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(76, 81, 191, 0.2);
+        }
+
+        .action-list li strong {
+            color: #4c51bf;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .tech-note {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: #a0aec0;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔕 POAP Event Inactivity Detected</h1>
+            <p>Understanding what happens when POAP events go quiet</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="highlight-box">
+                    <h3>🎯 What This Means</h3>
+                    <p>You've received a notification because a POAP event in your RSS feed hasn't had any new claims in <strong>4 or more weeks</strong>. This typically indicates that the event has concluded and no more POAPs are being distributed.</p>
+                </div>
+
+                <h2><span class="icon">📊</span>Why We Monitor Inactivity</h2>
+                <p>POAP2RSS automatically tracks the activity level of POAP events to help you manage your RSS subscriptions effectively. Unlike traditional RSS feeds that might simply stop updating, we provide explicit notifications about inactivity periods.</p>
+
+                <div class="info-box">
+                    <p><strong>🕐 Timeline:</strong> After 4 weeks of no new POAP claims, you'll receive the first inactivity notification. Each subsequent week without activity generates a new alert with an updated week count.</p>
+                </div>
+
+                <h2><span class="icon">🤔</span>What Should You Do?</h2>
+                <p>Here are your recommended next steps based on the inactivity notification:</p>
+
+                <ul class="action-list">
+                    <li>
+                        <strong>🗂️ Clean Up Your Feed Reader</strong>
+                        Remove or unsubscribe from inactive POAP event feeds to reduce clutter in your RSS reader.
+                    </li>
+                    <li>
+                        <strong>📅 Check Event Status</strong>
+                        Visit the POAP event page to confirm whether the event has officially ended or if there might be a resurgence of activity.
+                    </li>
+                    <li>
+                        <strong>📱 Keep for Historical Reference</strong>
+                        You might choose to keep the feed for historical purposes, especially if you're tracking the complete lifecycle of the event.
+                    </li>
+                    <li>
+                        <strong>🔄 Monitor for Revival</strong>
+                        Some events have secondary phases or follow-up distributions, so brief inactivity doesn't always mean permanent conclusion.
+                    </li>
+                </ul>
+
+                <h2><span class="icon">⚙️</span>Technical Details</h2>
+                <p>Our inactivity detection system works by:</p>
+
+                <div class="tech-note">
+                    • Analyzing the timestamp of the most recent POAP claim<br>
+                    • Calculating weeks since the last claim was made<br>
+                    • Generating unique notification IDs for each week of inactivity<br>
+                    • Ensuring your RSS reader treats each week as a new alert
+                </div>
+
+                <h3>🔄 Automatic Cleanup</h3>
+                <p>Each inactivity notification has a unique identifier, ensuring that:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li>Your RSS reader will show each week's alert as a separate item</li>
+                    <li>You receive fresh notifications rather than duplicate suppressions</li>
+                    <li>The feed remains "active" with periodic updates rather than going silent</li>
+                </ul>
+
+                <h2><span class="icon">🌟</span>Best Practices</h2>
+                
+                <h3>For Event Organizers</h3>
+                <p>If you're monitoring your own POAP event feeds:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>Expected Behavior:</strong> Inactivity notifications confirm that distribution has concluded as planned</li>
+                    <li><strong>Quality Control:</strong> Use these alerts to verify that all intended recipients have claimed their POAPs</li>
+                    <li><strong>Archive Planning:</strong> Plan for feed archival or documentation once events are confirmed complete</li>
+                </ul>
+
+                <h3>For POAP Collectors</h3>
+                <p>If you're following events you're interested in:</p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>Discovery Window:</strong> 4 weeks provides a reasonable window to discover and claim missed POAPs</li>
+                    <li><strong>Feed Hygiene:</strong> Regular cleanup helps maintain a focused, relevant RSS experience</li>
+                    <li><strong>Historical Value:</strong> Consider the archival value before removing feeds entirely</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <h3>💡 Pro Tip</h3>
+                    <p>You can always re-subscribe to a POAP event feed later if activity resumes. The POAP2RSS service will continue monitoring any event as long as there are active subscribers.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://app.poap2rss.com" class="cta-button">🏠 Back to POAP2RSS</a>
+                <a href="https://poap.xyz" class="cta-button">🎫 Visit POAP.xyz</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>
+                <strong>POAP2RSS</strong> - Bridging POAP events with RSS technology<br>
+                <small>
+                    Questions? Contact us or visit our 
+                    <a href="https://github.com/your-repo/poap2rss">documentation</a> for more information.
+                </small>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

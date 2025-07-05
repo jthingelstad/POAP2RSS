@@ -321,7 +321,7 @@ class RSSFeedGenerator:
                 
         description_elem = SubElement(item, 'description')
         description_elem.text = CDATA(description_html)
-        SubElement(item, 'guid').text = f"event-{event_details.get('id', 'unknown')}-description"
+        SubElement(item, 'guid').text = f"https://poap.gallery/drops/{event_details.get('id', 'unknown')}"
         SubElement(item, 'link').text = f"https://poap.gallery/drops/{event_details.get('id', 'unknown')}"
         
         # Use event date for timestamp - try multiple possible date fields
@@ -493,7 +493,8 @@ class RSSFeedGenerator:
             """
             
             # Use unique GUID for each week to ensure new notifications
-            SubElement(item, 'guid').text = f"inactivity-{event_details.get('id', 'unknown')}-week-{weeks_since_last_claim}"
+            SubElement(item, 'guid').text = f"https://www.poap2rss.com/dormant.html?event={event_details.get('id', 'unknown')}&week={weeks_since_last_claim}"
+            SubElement(item, 'link').text = f"https://www.poap2rss.com/dormant.html?event={event_details.get('id', 'unknown')}&week={weeks_since_last_claim}"
             SubElement(item, 'pubDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
         else:
             logger.info(f"No inactivity alert needed (only {weeks_since_last_claim} weeks since last claim)")
