@@ -26,24 +26,26 @@
 
   <main class="container">
     <h2>Subscribe to POAP events with RSS</h2>
-    <p>POAP2RSS creates a standard RSS feed for any <a href="https://poap.xyz">POAP</a> event. Drop an event ID in the URL and you have a live feed of new claims ready for any reader or automation platform.</p>
+    <p><strong>POAP2RSS</strong> creates a standard <a href="https://en.wikipedia.org/wiki/RSS">RSS</a> feed for any <a href="https://poap.xyz">POAP</a> event. Drop an event ID in the URL and you have a live feed of new claims ready for any reader or automation platform. <strong>POAP2RSS</strong> makes POAPs more open, programmable, and connected to the wider web.</p>
 
     <h3>Usage</h3>
     <p>Replace <code>{event_id}</code> with the event you want to follow:</p>
     <pre><code>https://app.poap2rss.com/event/{event_id}</code></pre>
     <p>You can also subscribe to a collector's address or ENS name:</p>
     <pre><code>https://app.poap2rss.com/address/{address}</code></pre>
+    <p>You can connect your feed into a standard feed reader like <a href="https://feedbin.com">Feedbin</a> or an automation platform like <a href="https://ifttt.com/explore">IFTTT</a>, <a href="https://zapier.com">Zapier</a>, or anything else that supports RSS.</p>
 
     <h3>Features</h3>
     <ul>
       <li>The 20 most recent POAP claims</li>
-      <li>ENS names shown as the author where available</li>
+      <li>Feed items include event images</li>
+      <li>ENS names or Address shown as the author</li>
       <li>Weekly notices when events become inactive</li>
     </ul>
   </main>
 
   <footer class="container">
-    <small>Not affiliated with POAP Inc.</small>
+    <small>Not affiliated with <a href="https://poap.xyz/">POAP Inc.</a></small>
   </footer>
 
   <script defer data-domain="poap2rss.com" src="https://plausible.io/js/script.js"></script>
