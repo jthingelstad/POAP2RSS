@@ -27,13 +27,6 @@
 - Zero tracking or user data collection.
 - Built on open protocols for maximum portability and reuse.
 
-## 🛣 Roadmap
-
-- [ ] Address-based collection feeds (e.g. `rss/address/jamie.eth`)
-- [ ] Batch feeds for multiple events
-- [ ] JSON Feed output support
-- [ ] Web-based feed creation UI
-
 ## 🤝 Contributing
 
 Issues and pull requests welcome! Check open issues or submit ideas. For feedback, contact via [poap2rss.com](https://poap2rss.com).
