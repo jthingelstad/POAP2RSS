@@ -1,43 +1,23 @@
 # POAP2RSS
 
-**POAP2RSS** is a service that generates an RSS feed for any [POAP](https://poap.xyz) event, making it easy to subscribe to claim activity in real time. Whether you're an event organizer, a collector, or using automation tools like Zapier, POAP2RSS gives you a clean, standards-compliant feed of the latest claims.
+**POAP2RSS** is a service that generates an RSS feed for any [POAP](https://poap.xyz) event or collector, making it easy to subscribe to claim activity. Whether you're an event organizer, a collector, or using automation tools like [Zapier](https://zapier.com) — **POAP2RSS** provides a feed of the latest claims.
 
-🔗 Visit [poap2rss.com](https://poap2rss.com) for full documentation, usage details, and examples.
+Visit [poap2rss.com](https://poap2rss.com) for more.
 
-## ✨ Features
+## Features
 
-- 🔄 **Live Feed of Claims:** Track the 20 most recent claims from any POAP event.
-- 👤 **ENS Support:** Displays ENS names as the author of each RSS item (with fallback to wallet address).
-- 📅 **Timestamped Entries:** Each claim uses the actual collection time as the publish date.
-- ⏰ **Inactivity Alerts:** If no claims occur for 4+ weeks, the feed posts a gentle reminder (updated weekly).
-- 🖼 **Event Metadata:** Includes an initial item with the POAP event’s description and image.
-- ⚡ **Smart Caching:** Uses a 15-minute cache to minimize API calls and improve responsiveness.
-- 🤖 **Fully Standard RSS:** Works out of the box with feed readers and automation platforms like IFTTT, Zapier, and Slack.
+- The 20 most recent POAP claims
+- Feed items include event images
+- ENS names or Address shown as the author
+- Weekly notices when events become inactive
 
-## 🧩 Use Cases
+## Use Cases
 
-- Event creators monitoring real-time participation.
-- Fans following collector activity (coming soon).
-- Automations triggered on claim (e.g. post to Discord, tweet, log to Notion).
-- RSS-based archiving of attendance patterns.
+- Event creators monitoring event claims.
+- Following collector activity by address.
+- Automations triggered on claim using IFTT, Zapier, or other services.
+- Whatever else you want to do with the RSS feed...
 
-## 🔐 Design Goals
+## Contributing
 
-- Minimal latency with caching for scalability.
-- Zero tracking or user data collection.
-- Built on open protocols for maximum portability and reuse.
-
-## 🤝 Contributing
-
-Issues and pull requests welcome! Check open issues or submit ideas. For feedback, contact via [poap2rss.com](https://poap2rss.com).
-
-## 📄 License
-
-MIT License. See [LICENSE](./LICENSE) for details.
-
----
-
-> Brought to life to make POAPs more open, programmable, and connected to the wider web.
-
-
-Made my Jamie Thingelstad, OpenAI 4-o, Anthropic Sonnet 4
+Issues and pull requests welcome! For feedback, contact via [poap2rss.com](https://www.poap2rss.com).
