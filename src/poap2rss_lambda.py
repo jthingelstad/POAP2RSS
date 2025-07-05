@@ -493,8 +493,8 @@ class RSSFeedGenerator:
             """
             
             # Use unique GUID for each week to ensure new notifications
-            SubElement(item, 'guid').text = f"https://www.poap2rss.com/dormant.html?event={event_details.get('id', 'unknown')}&week={weeks_since_last_claim}"
-            SubElement(item, 'link').text = f"https://www.poap2rss.com/dormant.html?event={event_details.get('id', 'unknown')}&week={weeks_since_last_claim}"
+            SubElement(item, 'guid').text = f"https://www.poap2rss.com/inactive.html?event={event_details.get('id', 'unknown')}&week={weeks_since_last_claim}"
+            SubElement(item, 'link').text = f"https://www.poap2rss.com/inactive.html?event={event_details.get('id', 'unknown')}&week={weeks_since_last_claim}"
             SubElement(item, 'pubDate').text = formatdate(timeval=time.time(), localtime=False, usegmt=True)
         else:
             logger.info(f"No inactivity alert needed (only {weeks_since_last_claim} weeks since last claim)")
