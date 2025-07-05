@@ -1,6 +1,6 @@
 # POAP2RSS
 
-**POAP2RSS** is a service that generates an RSS feed for any [POAP](https://poap.xyz) event or collector, making it easy to subscribe to claim activity. Whether you're an event organizer, a collector, or using automation tools like [Zapier](https://zapier.com) — **POAP2RSS** provides a feed of the latest claims.
+**POAP2RSS** is a service that generates an RSS feed for any [POAP](https://poap.xyz) event or collector, making it easy to subscribe to claim activity. Whether you're an event organizer, a collector, or using automation tools — **POAP2RSS** provides a feed of the latest claims.
 
 Visit [poap2rss.com](https://www.poap2rss.com) for more.
 
@@ -15,7 +15,7 @@ Visit [poap2rss.com](https://www.poap2rss.com) for more.
 
 - Event creators monitoring event claims.
 - Following collector activity by address.
-- Automations triggered on claim using IFTT, Zapier, or other services.
+- Automations triggered on claim using [IFTTT](https://ifttt.com/explore), [Zapier](https://zapier.com), or other services.
 - Whatever else you want to do with the RSS feed...
 
 ## Contributing
