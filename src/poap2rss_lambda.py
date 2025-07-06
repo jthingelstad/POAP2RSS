@@ -302,23 +302,20 @@ class RSSFeedGenerator:
         event_name = event_details.get('name', 'Unknown Event')
         event_description = event_details.get('description', 'No description available')
         
-        SubElement(item, 'title').text = f"{event_name} Event Details"
+        SubElement(item, 'title').text = f"{event_name}"
         
         # Create description with event details
-        description_html = f"""
-        <h3>{event_name}</h3>
-        <p>{event_description}</p>
-        """
-        
-        if event_details.get('image_url'):
-            description_html += f'<img src="{event_details["image_url"]}" width="500" height="500" />'
+        description_html = f"<p>{event_description}</p>"
         
         if event_details.get('city'):
             description_html += f"<p><strong>Location:</strong> {event_details['city']}"
             if event_details.get('country'):
                 description_html += f", {event_details['country']}"
-            description_html += "</p>"
+            description_html += "</p>\n"
                 
+        if event_details.get('image_url'):
+            description_html += f'<img src="{event_details["image_url"]}" width="500" height="500" />'
+        
         description_elem = SubElement(item, 'description')
         description_elem.text = CDATA(description_html)
         SubElement(item, 'guid').text = f"https://poap.gallery/drops/{event_details.get('id', 'unknown')}"
@@ -369,12 +366,9 @@ class RSSFeedGenerator:
         SubElement(item, 'title').text = f""
         SubElement(item, 'author').text = f"{display_name}"
         
-        description = f"""
-        <p><strong><a href="https://collectors.poap.xyz/scan/{owner_address}">{display_name}</a></strong>
-        claimed POAP <a href="https://collectors.poap.xyz/token/{token_id}">{token_id}</a> for 
-        <strong><a href="https://poap.gallery/drops/{event_details.get('id', 'Unknown Event')}">{event_details.get('name', 'Unknown Event')}</a></strong></p>
-        <p><img src="{event_details["image_url"]}" width="500" height="500" /></p>
-        """
+        description = f"""<p>POAP <a href="https://collectors.poap.xyz/token/{token_id}">{token_id}</a> claimed by <strong><a href="https://collectors.poap.xyz/scan/{owner_address}">{display_name}</a></strong> at <strong><a href="https://poap.gallery/drops/{event_details.get('id', 'Unknown Event')}">{event_details.get('name', 'Unknown Event')}</a></strong>.</p>
+<img src="{event_details["image_url"]}" width="500" height="500" />
+"""
         
         description_elem = SubElement(item, 'description')
         description_elem.text = CDATA(description)
@@ -414,10 +408,9 @@ class RSSFeedGenerator:
         SubElement(item, 'title').text = f""
         SubElement(item, 'author').text = address
         
-        description = f"""
-        <p>Collected POAP <a href="https://collectors.poap.xyz/token/{poap.get('tokenId', 'unknown')}">{poap.get('tokenId', 'unknown')}</a> for <strong><a href="https://poap.gallery/drops/{event_id}">{event_name}</a></strong>.</p>
-        <p><img src="{event_image_url}" width="500" height="500" /></p>
-        """
+        description = f"""<p>POAP <a href="https://collectors.poap.xyz/token/{poap.get('tokenId', 'unknown')}">{poap.get('tokenId', 'unknown')}</a> at <strong><a href="https://poap.gallery/drops/{event_id}">{event_name}</a></strong>.</p>
+<img src="{event_image_url}" width="500" height="500" />
+"""
         
         description_elem = SubElement(item, 'description')
         description_elem.text = CDATA(description)
@@ -486,11 +479,10 @@ class RSSFeedGenerator:
                 title = f"{weeks_since_last_claim} weeks with no claims"
             
             SubElement(item, 'title').text = title
-            SubElement(item, 'description').text = f"""
-            <p>There have been no new POAP claims for this event in {weeks_since_last_claim} weeks.</p>
-            <p>The event may be over. Consider unsubscribing from this feed if no further activity is expected.</p>
-            <p><em>Last claim was on {most_recent_claim.strftime('%Y-%m-%d %H:%M:%S UTC')}</em></p>
-            """
+            SubElement(item, 'description').text = f"""<p>There have been no new POAP claims for this event in {weeks_since_last_claim} weeks.</p>
+<p>The event may be over. Consider unsubscribing from this feed if no further activity is expected.</p>
+<p><em>Last claim was on {most_recent_claim.strftime('%Y-%m-%d %H:%M:%S UTC')}</em></p>
+"""
             
             # Use unique GUID for each week to ensure new notifications
             SubElement(item, 'guid').text = f"https://www.poap2rss.com/inactive.html?event={event_details.get('id', 'unknown')}&week={weeks_since_last_claim}"
