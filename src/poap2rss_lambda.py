@@ -35,8 +35,8 @@ POAP_CLIENT_SECRET = os.environ.get('POAP_CLIENT_SECRET')
 
 # Cache configuration
 CACHE_DURATION_MINUTES = 15
-MAX_CLAIMS_COUNT = 20
-INACTIVITY_THRESHOLD_WEEKS = int(os.environ.get('INACTIVITY_THRESHOLD_WEEKS', '4'))  # Allow override for testing
+MAX_CLAIMS_COUNT = 50
+INACTIVITY_THRESHOLD_WEEKS = int(os.environ.get('INACTIVITY_THRESHOLD_WEEKS', '12'))  # Allow override for testing
 
 class POAPAPIClient:
     """POAP API client with authentication and rate limiting"""
