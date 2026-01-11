@@ -35,7 +35,8 @@ POAP_CLIENT_SECRET = os.environ.get('POAP_CLIENT_SECRET')
 
 # Cache configuration
 CACHE_DURATION_MINUTES = 15
-MAX_CLAIMS_COUNT = 50
+MAX_CLAIMS_COUNT = int(os.environ.get('MAX_CLAIMS_COUNT', '50'))
+API_PAGE_SIZE = 100  # POAP API max items per request
 INACTIVITY_THRESHOLD_WEEKS = int(os.environ.get('INACTIVITY_THRESHOLD_WEEKS', '12'))  # Allow override for testing
 
 class POAPAPIClient:
@@ -113,18 +114,34 @@ class POAPAPIClient:
         return self._make_request(f"/events/id/{event_id}")
     
     def get_event_poaps(self, event_id: int, limit: int = MAX_CLAIMS_COUNT) -> List[Dict]:
-        """Get POAP holders for an event"""
-        params = {'limit': limit, 'offset': 0}
-        response = self._make_request(f"/event/{event_id}/poaps", params)
-        
-        # Handle the response structure - POAP API returns data under 'tokens' key
-        if isinstance(response, dict) and 'tokens' in response:
-            return response['tokens']
-        elif isinstance(response, list):
-            return response
-        else:
-            logger.warning(f"Unexpected response structure: {response}")
-            return []
+        """Get POAP holders for an event with pagination"""
+        all_poaps = []
+        offset = 0
+
+        while len(all_poaps) < limit:
+            page_size = min(API_PAGE_SIZE, limit - len(all_poaps))
+            params = {'limit': page_size, 'offset': offset}
+            response = self._make_request(f"/event/{event_id}/poaps", params)
+
+            # Handle the response structure - POAP API returns data under 'tokens' key
+            if isinstance(response, dict) and 'tokens' in response:
+                tokens = response['tokens']
+            elif isinstance(response, list):
+                tokens = response
+            else:
+                logger.warning(f"Unexpected response structure: {response}")
+                break
+
+            if not tokens:  # No more data
+                break
+
+            all_poaps.extend(tokens)
+            offset += len(tokens)
+
+            if len(tokens) < page_size:  # Last page
+                break
+
+        return all_poaps[:limit]
     
     def get_address_poaps(self, address: str, limit: int = MAX_CLAIMS_COUNT) -> List[Dict]:
         """Get POAPs for a specific address"""
