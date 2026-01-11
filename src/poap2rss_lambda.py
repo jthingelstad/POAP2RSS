@@ -186,7 +186,7 @@ class RSSFeedGenerator:
     def __init__(self, poap_client: POAPAPIClient):
         self.poap_client = poap_client
     
-    def generate_event_feed(self, event_id: int) -> str:
+    def generate_event_feed(self, event_id: int, suppress_inactivity_alert: bool = False) -> str:
         """Generate RSS feed for a POAP event"""
         logger.info(f"Generating RSS feed for event {event_id}")
         
@@ -230,7 +230,8 @@ class RSSFeedGenerator:
                 self._add_claim_item(channel, poap, event_details)
         
         # Check for inactivity and add alert if needed
-        self._check_and_add_inactivity_alert(channel, event_details, poaps)
+        if not suppress_inactivity_alert:
+            self._check_and_add_inactivity_alert(channel, event_details, poaps)
         
         return self._format_xml(rss)
     
@@ -532,7 +533,11 @@ def lambda_handler(event, context):
         
         feed_type = path_parts[0]  # 'event' or 'address'
         identifier = path_parts[1]  # event_id or address
-        
+
+        # Parse query parameters
+        query_params = event.get('queryStringParameters') or {}
+        suppress_warning = 'nowarning' in query_params
+
         if feed_type not in ['event', 'address']:
             return {
                 'statusCode': 400,
@@ -562,7 +567,7 @@ def lambda_handler(event, context):
         if feed_type == 'event':
             try:
                 event_id = int(identifier)
-                rss_xml = feed_generator.generate_event_feed(event_id)
+                rss_xml = feed_generator.generate_event_feed(event_id, suppress_inactivity_alert=suppress_warning)
             except ValueError:
                 return {
                     'statusCode': 400,
