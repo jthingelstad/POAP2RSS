@@ -11,6 +11,7 @@ from botocore.exceptions import ClientError
 import time
 from typing import Dict, List, Optional, Any
 import html
+import urllib.request
 
 try:
     from xml.etree.ElementTree import CDATA  # type: ignore
@@ -32,6 +33,10 @@ POAP_API_BASE = "https://api.poap.tech"
 POAP_API_KEY = os.environ.get('POAP_API_KEY')
 POAP_CLIENT_ID = os.environ.get('POAP_CLIENT_ID')
 POAP_CLIENT_SECRET = os.environ.get('POAP_CLIENT_SECRET')
+
+# Tinylytics configuration
+TINYLYTICS_API_TOKEN = os.environ.get('TINYLYTICS_API_TOKEN')
+TINYLYTICS_SITE_ID = os.environ.get('TINYLYTICS_SITE_ID')
 
 # Cache configuration
 CACHE_DURATION_MINUTES = 15
@@ -532,6 +537,35 @@ class RSSFeedGenerator:
 
         return parsed.toprettyxml(indent='  ', encoding='utf-8').decode('utf-8')
 
+def track_hit(path: str, headers: Dict[str, str]):
+    """Send a hit to Tinylytics for tracking. Best-effort: failures are logged and ignored."""
+    if not TINYLYTICS_API_TOKEN or not TINYLYTICS_SITE_ID:
+        return
+
+    try:
+        payload = json.dumps({
+            'path': path,
+            'url': f'https://poap2rss.com{path}',
+            'country': 'XX',
+            'referrer': headers.get('Referer', headers.get('referer', '')),
+            'user_agent': headers.get('User-Agent', headers.get('user-agent', '')),
+        }).encode('utf-8')
+
+        req = urllib.request.Request(
+            f'https://tinylytics.app/api/v1/sites/{TINYLYTICS_SITE_ID}/hits',
+            data=payload,
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {TINYLYTICS_API_TOKEN}',
+                'User-Agent': 'POAP2RSS/1.0',
+            },
+            method='POST',
+        )
+        urllib.request.urlopen(req, timeout=3)
+    except Exception as e:
+        logger.warning(f"Tinylytics tracking failed: {e}")
+
+
 def lambda_handler(event, context):
     """Lambda function handler"""
     try:
@@ -568,6 +602,7 @@ def lambda_handler(event, context):
         
         if cached_data:
             logger.info(f"Returning cached RSS feed for {cache_key}")
+            track_hit(path, event.get('headers', {}))
             return {
                 'statusCode': 200,
                 'headers': {
@@ -599,7 +634,9 @@ def lambda_handler(event, context):
         CacheManager.set_cached_data(cache_key, cache_data)
         
         logger.info(f"Generated and cached RSS feed for {cache_key}")
-        
+
+        track_hit(path, event.get('headers', {}))
+
         return {
             'statusCode': 200,
             'headers': {

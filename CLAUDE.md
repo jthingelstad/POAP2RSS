@@ -43,6 +43,8 @@ POAP2RSS is an AWS Lambda-based service that generates RSS feeds for POAP (Proof
 - `POAP_CLIENT_ID`: OAuth2 client ID
 - `POAP_CLIENT_SECRET`: OAuth2 client secret
 - `INACTIVITY_THRESHOLD_WEEKS`: Weeks before showing inactivity notice (default: 12)
+- `TINYLYTICS_API_TOKEN`: Bearer token for Tinylytics hit tracking (optional)
+- `TINYLYTICS_SITE_ID`: Numeric site ID for Tinylytics (optional)
 
 ## Development Commands
 
