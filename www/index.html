@@ -41,7 +41,7 @@
     <input type="text" id="poap-url" placeholder="https://poap.gallery/drops/... or event ID or ENS name">
     <div id="result" style="display: none;">
       <p>Your RSS feed URL:</p>
-      <pre><code id="feed-url"></code><button id="copy-btn">Copy</button></pre>
+      <pre><code id="feed-url"></code><button id="copy-btn" data-tinylytics-event="feedurl.copy">Copy</button></pre>
     </div>
 
     <h3>Features</h3>
@@ -56,7 +56,7 @@
 
   <footer>
     <div class="container">
-      <small><button class="tinylytics_kudos"></button> <span class="tinylytics_hits"></span> hits.</small>
+      <small><button class="tinylytics_kudos" data-kudos-icon="👍"></button> <span class="tinylytics_hits"></span> hits.</small>
       <small>Created by <a href="https://www.thingelstad.com">Jamie Thingelstad</a>.</small>
       <small>Want to support POAP2RSS? Send something to poap.thingelstad.eth.</small>
       <small>Not affiliated with <a href="https://poap.xyz/">POAP Inc.</a></small>
@@ -65,7 +65,7 @@
   </footer>
 
   <script defer data-domain="poap2rss.com" src="https://plausible.io/js/script.js"></script>
-  <script src="https://tinylytics.app/embed/_btLkbw5Xrua9fzqr_F_.js?kudos&hits&countries" defer></script>
+  <script src="https://tinylytics.app/embed/_btLkbw5Xrua9fzqr_F_.js?kudos&hits&countries&events" defer></script>
 
   <script>
     (function() {
