@@ -5,22 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>POAP2RSS</title>
   <meta name="description" content="POAP2RSS turns POAP event activity into a simple RSS feed." />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-  <style>
-    :root { --pico-primary: #5c4df3; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="container">
-    <nav>
+  <header>
+    <nav class="container">
+      <a href="index.html" class="logo-link">
+        <img src="assets/POAP2RSS.png" alt="POAP2RSS" class="logo-img">
+        <span class="logo-text">POAP2RSS</span>
+      </a>
       <ul>
-        <li><strong><a href="index.html">POAP2RSS</a></strong></li>
-      </ul>
-      <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="/" class="active">Home</a></li>
         <li><a href="/about.html">About</a></li>
         <li><a href="/changelog.html">Changelog</a></li>
-        <li><a href="https://updown.io/p/3hibx">Status</a></li>
+        <li><a href="https://updown.io/p/3hibx">Status &#8599;</a></li>
+        <li><a href="https://tinylytics.app/public/St8FNYwPQ6SHMumGZgtB">Analytics &#8599;</a></li>
       </ul>
     </nav>
   </header>
@@ -40,29 +39,31 @@
     <h3>Get Feed URL</h3>
     <p>Paste a POAP URL, event ID, or address:</p>
     <input type="text" id="poap-url" placeholder="https://poap.gallery/drops/... or event ID or ENS name">
-    <div id="result" style="display: none; margin-top: 1rem;">
+    <div id="result" style="display: none;">
       <p>Your RSS feed URL:</p>
-      <pre style="display: flex; align-items: center; gap: 0.5rem;"><code id="feed-url"></code><button id="copy-btn" style="margin: 0; padding: 0.25rem 0.5rem;">Copy</button></pre>
+      <pre><code id="feed-url"></code><button id="copy-btn">Copy</button></pre>
     </div>
 
     <h3>Features</h3>
-    <ul>
+    <ul class="features">
       <li>The 50 most recent POAP claims</li>
       <li>Feed items include event images</li>
       <li>ENS names or Address shown as the author</li>
       <li>Weekly notices when events become inactive (add <code>?nowarning=1</code> to suppress)</li>
     </ul>
 
-    <p><button class="tinylytics_kudos"></button> <span class="tinylytics_hits"></span> hits.</p>
   </main>
 
-  <footer class="container">
-    <small>Created by <a href="https://www.thingelstad.com">Jamie Thingelstad</a>.</small><br/>
-    <small>Want to support POAP2RSS? Send something to poap.thingelstad.eth.</small><br/>
-    <small>Not affiliated with <a href="https://poap.xyz/">POAP Inc.</a></small><br/>
-    <a href="https://poap.xyz/"><img src="powered-by-poap.png" style="width: 165px; padding-top: 24px; padding-bottom: 24px;"></a>
+  <footer>
+    <div class="container">
+      <small><button class="tinylytics_kudos"></button> <span class="tinylytics_hits"></span> hits.</small>
+      <small>Created by <a href="https://www.thingelstad.com">Jamie Thingelstad</a>.</small>
+      <small>Want to support POAP2RSS? Send something to poap.thingelstad.eth.</small>
+      <small>Not affiliated with <a href="https://poap.xyz/">POAP Inc.</a></small>
+      <a href="https://poap.xyz/"><img src="powered-by-poap.png" alt="Powered by POAP"></a>
+    </div>
   </footer>
-  
+
   <script defer data-domain="poap2rss.com" src="https://plausible.io/js/script.js"></script>
   <script src="https://tinylytics.app/embed/_btLkbw5Xrua9fzqr_F_.js?kudos&hits&countries" defer></script>
 

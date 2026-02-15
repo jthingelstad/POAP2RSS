@@ -4,17 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inactive Feed - POAP2RSS</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-  <style>
-    :root { --pico-primary: #5c4df3; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="container">
-    <nav>
-      <ul>
-        <li><strong><a href="index.html">POAP2RSS</a></strong></li>
-      </ul>
+  <header>
+    <nav class="container">
+      <a href="index.html" class="logo-link">
+        <img src="assets/POAP2RSS.png" alt="POAP2RSS" class="logo-img">
+        <span class="logo-text">POAP2RSS</span>
+      </a>
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/about.html">About</a></li>
@@ -29,13 +27,15 @@
     <p>Removing inactive feeds helps keep POAP2RSS more efficient. You can always resubscribe later if activity picks up again.</p>
   </main>
 
-  <footer class="container">
-    <small>Created by <a href="https://www.thingelstad.com">Jamie Thingelstad</a>.</small><br/>
-    <small>Want to support POAP2RSS? Send something to poap.thingelstad.eth.</small><br/>
-    <small>Not affiliated with <a href="https://poap.xyz/">POAP Inc.</a></small><br/>
-    <a href="https://poap.xyz/"><img src="powered-by-poap.png" style="width: 165px; padding-top: 24px; padding-bottom: 24px;"></a>
+  <footer>
+    <div class="container">
+      <small>Created by <a href="https://www.thingelstad.com">Jamie Thingelstad</a>.</small>
+      <small>Want to support POAP2RSS? Send something to poap.thingelstad.eth.</small>
+      <small>Not affiliated with <a href="https://poap.xyz/">POAP Inc.</a></small>
+      <a href="https://poap.xyz/"><img src="powered-by-poap.png" alt="Powered by POAP"></a>
+    </div>
   </footer>
-  
+
   <script defer data-domain="poap2rss.com" src="https://plausible.io/js/script.js"></script>
   <script src="https://tinylytics.app/embed/_btLkbw5Xrua9fzqr_F_.js?kudos&hits&countries" defer></script>
 </body>
