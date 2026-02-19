@@ -1,0 +1,84 @@
+---
+layout: base.njk
+title: POAP2RSS
+description: POAP2RSS turns POAP event activity into a simple RSS feed.
+tinylyticsEvents: true
+---
+
+<h2>Subscribe to POAP events with RSS</h2>
+<p><strong>POAP2RSS</strong> creates a standard <a href="https://en.wikipedia.org/wiki/RSS">RSS</a> feed for any <a href="https://poap.xyz">POAP</a> event or collector. Drop an event ID, collector address, or <a href="https://ens.domains">ENS</a> name in the URL and you have an up-to-date feed of the newest claims ready for any reader or automation platform. <strong>POAP2RSS</strong> makes POAPs more open, programmable, and connected to the wider web.</p>
+
+<h3>Usage</h3>
+<p>Replace <code>{event_id}</code> with the event you want to follow:</p>
+<pre><code>https://app.poap2rss.com/event/{event_id}</code></pre>
+<p>You can also subscribe to a collector's address or ENS name:</p>
+<pre><code>https://app.poap2rss.com/address/{address}</code></pre>
+<p>You can connect your feed into a standard feed reader like <a href="https://feedbin.com">Feedbin</a> or an automation platform like <a href="https://www.make.com/">Make</a>, <a href="https://ifttt.com/explore">IFTTT</a>, <a href="https://zapier.com">Zapier</a>, or anything else that supports RSS.</p>
+<p>Want to merge multiple POAP2RSS feeds into one? Try <a href="https://www.rssrssrssrss.com">rssrssrssrss</a>!</p>
+
+<h3>Get Feed URL</h3>
+<p>Paste a POAP URL, event ID, or address:</p>
+<input type="text" id="poap-url" placeholder="https://poap.gallery/drops/... or event ID or ENS name">
+<div id="result" style="display: none;">
+  <p>Your RSS feed URL:</p>
+  <pre><code id="feed-url"></code><button id="copy-btn" data-tinylytics-event="feedurl.copy">Copy</button></pre>
+</div>
+
+<h3>Features</h3>
+<ul class="features">
+  <li>The 50 most recent POAP claims</li>
+  <li>Feed items include event images</li>
+  <li>ENS names or Address shown as the author</li>
+  <li>Weekly notices when events become inactive (add <code>?nowarning=1</code> to suppress)</li>
+</ul>
+
+<script>
+  (function() {
+    const input = document.getElementById('poap-url');
+    const result = document.getElementById('result');
+    const feedUrl = document.getElementById('feed-url');
+    const copyBtn = document.getElementById('copy-btn');
+    const BASE_URL = 'https://app.poap2rss.com';
+
+    function parseInput(value) {
+      value = value.trim();
+      if (!value) return null;
+
+      // POAP Gallery URL: https://poap.gallery/drops/191490
+      let match = value.match(/poap\.gallery\/drops\/(\d+)/);
+      if (match) return `${BASE_URL}/event/${match[1]}`;
+
+      // Collectors URL: https://collectors.poap.xyz/scan/address
+      match = value.match(/collectors\.poap\.xyz\/scan\/([^\/\s]+)/);
+      if (match) return `${BASE_URL}/address/${match[1]}`;
+
+      // Raw event ID (pure digits)
+      if (/^\d+$/.test(value)) return `${BASE_URL}/event/${value}`;
+
+      // ETH address (0x followed by 40 hex chars)
+      if (/^0x[a-fA-F0-9]{40}$/.test(value)) return `${BASE_URL}/address/${value}`;
+
+      // ENS name (contains .eth)
+      if (value.includes('.eth')) return `${BASE_URL}/address/${value}`;
+
+      return null;
+    }
+
+    input.addEventListener('input', function() {
+      const url = parseInput(this.value);
+      if (url) {
+        feedUrl.textContent = url;
+        result.style.display = 'block';
+      } else {
+        result.style.display = 'none';
+      }
+    });
+
+    copyBtn.addEventListener('click', function() {
+      navigator.clipboard.writeText(feedUrl.textContent).then(function() {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+      });
+    });
+  })();
+</script>
