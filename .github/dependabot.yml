@@ -4,6 +4,12 @@ updates:
     directory: "/www"
     schedule:
       interval: weekly
+    ignore:
+      # picomatch is a transitive dependency of @11ty/eleventy. The only
+      # "patched" path Dependabot finds would downgrade Eleventy 3.1.6 -> 0.8.3
+      # (fix_available: false), so its update job errors out. Ignore it here
+      # and let Eleventy pull a patched picomatch in a future release.
+      - dependency-name: "picomatch"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
