@@ -9,6 +9,8 @@ LAMBDA_FUNCTION_NAME="POAP2RSS"
 S3_BUCKET="poap2rss.com"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+PYTHON_VERSION="$(tr -d '[:space:]' < "$PROJECT_DIR/.python-version")"
+LAMBDA_RUNTIME="python${PYTHON_VERSION}"
 
 # Colors
 RED='\033[0;31m'
@@ -21,28 +23,56 @@ deploy_lambda() {
 
     # Create temp directory
     TEMP_DIR=$(mktemp -d)
-    trap "rm -rf $TEMP_DIR" EXIT
+    PACKAGE_DIR="$TEMP_DIR/package"
+    REQUIREMENTS_FILE="$TEMP_DIR/requirements.txt"
+    mkdir -p "$PACKAGE_DIR"
+    trap 'rm -rf "$TEMP_DIR"' EXIT
 
-    echo "  Creating deployment package..."
+    echo "  Creating locked Python ${PYTHON_VERSION} x86_64 deployment package..."
 
-    # Install dependencies
-    pip install --target "$TEMP_DIR" requests --quiet
+    # Export the exact production dependency set and install Lambda-compatible wheels.
+    uv export \
+        --directory "$PROJECT_DIR" \
+        --locked \
+        --no-dev \
+        --no-emit-project \
+        --format requirements-txt \
+        --output-file "$REQUIREMENTS_FILE"
+    uv pip install \
+        --target "$PACKAGE_DIR" \
+        --requirements "$REQUIREMENTS_FILE" \
+        --python-version "$PYTHON_VERSION" \
+        --python-platform x86_64-manylinux2014 \
+        --only-binary :all: \
+        --no-compile
 
-    # Copy Lambda function (boto3 is provided by AWS Lambda runtime)
-    cp "$PROJECT_DIR/src/poap2rss_lambda.py" "$TEMP_DIR/lambda_function.py"
+    # Lambda requires the handler module at the root of the deployment archive.
+    cp "$PROJECT_DIR/src/poap2rss_lambda.py" "$PACKAGE_DIR/lambda_function.py"
 
     # Create zip file
-    cd "$TEMP_DIR"
-    zip -r9 "$PROJECT_DIR/lambda.zip" . --quiet
+    cd "$PACKAGE_DIR"
+    zip -X -r9 "$PROJECT_DIR/lambda.zip" . --quiet
     cd "$PROJECT_DIR"
 
-    echo "  Uploading to AWS Lambda..."
+    echo "  Uploading locked code and dependencies..."
 
     # Deploy to Lambda
     aws lambda update-function-code \
         --function-name "$LAMBDA_FUNCTION_NAME" \
         --zip-file "fileb://$PROJECT_DIR/lambda.zip" \
         --output text --query 'FunctionArn'
+    aws lambda wait function-updated --function-name "$LAMBDA_FUNCTION_NAME"
+
+    echo "  Updating Lambda runtime to ${LAMBDA_RUNTIME} and removing obsolete layers..."
+
+    aws lambda update-function-configuration \
+        --cli-input-json "{\"FunctionName\":\"$LAMBDA_FUNCTION_NAME\",\"Runtime\":\"$LAMBDA_RUNTIME\",\"Layers\":[]}" \
+        --output text --query 'Runtime'
+    aws lambda wait function-updated --function-name "$LAMBDA_FUNCTION_NAME"
+
+    aws lambda get-function-configuration \
+        --function-name "$LAMBDA_FUNCTION_NAME" \
+        --query '{Runtime:Runtime,Layers:Layers[*].Arn,State:State,LastUpdateStatus:LastUpdateStatus,LastModified:LastModified}'
 
     # Clean up zip file
     rm -f "$PROJECT_DIR/lambda.zip"

@@ -89,7 +89,7 @@ This guide will walk you through setting up all the necessary AWS services to de
 2. **Create Function**
    - Click "Create function"
    - **Function name**: `POAP2RSS`
-   - **Runtime**: Python 3.11 (or latest available)
+   - **Runtime**: Python 3.14 (matching `.python-version` and `pyproject.toml`)
    - **Architecture**: x86_64
    - **Execution role**: Use an existing role → `POAP2RSS-Lambda-Role`
    - Click "Create function"
@@ -111,15 +111,17 @@ This guide will walk you through setting up all the necessary AWS services to de
    - Copy the entire Lambda function code from the artifact
    - Click "Deploy"
 
-6. **Add Required Layer (for requests library)**
-   - Go to "Code" tab → "Layers"
-   - Click "Add a layer"
-   - **Layer source**: Specify an ARN
-   - **Layer version ARN**: `arn:aws:lambda:YOUR_REGION:770693421928:layer:Klayers-p311-requests:1`
-   - Replace `YOUR_REGION` with your region (e.g., `us-east-1`)
-   - Click "Add"
+6. **Package the required dependency**
+   - Use `scripts/deploy.sh lambda` from the repository root for normal code
+     deployments. It exports the locked production dependencies and installs
+     Lambda-compatible x86_64 wheels into the deployment zip alongside
+     `lambda_function.py`.
+   - Do not attach the old public Python 3.11 `requests` layer. Its runtime no
+     longer matches this project, and the deployment package is self-contained.
 
-   *Note: This is a public layer that includes the requests library. You can also create your own layer if preferred.*
+The production `POAP2RSS` function in `us-east-1` was verified on Python 3.14
+with no attached layers on 2026-07-17. The deployment script keeps the runtime
+aligned with the repository target after uploading the self-contained zip.
 
 ## Step 4: Create API Gateway
 

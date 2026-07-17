@@ -8,7 +8,7 @@ POAP2RSS is an AWS Lambda-based service that generates RSS feeds for POAP (Proof
 
 ## Architecture
 
-- **Backend**: Single Python Lambda function (`src/poap2rss_lambda.py`) deployed on AWS
+- **Backend**: Single Python Lambda function (`src/poap2rss_lambda.py`) deployed on AWS. The repository and live `POAP2RSS` function in `us-east-1` target Python 3.14; production was verified on 2026-07-17.
 - **Frontend**: Static HTML website in `www/` directory
 - **Storage**: DynamoDB table for caching API responses (15-minute cache duration)
 - **API Integration**: Authenticates with POAP API using OAuth2 client credentials flow
@@ -48,20 +48,31 @@ POAP2RSS is an AWS Lambda-based service that generates RSS feeds for POAP (Proof
 
 ## Development Commands
 
-### Local Testing
-```python
-# Run the Lambda function locally (requires environment variables)
-python src/poap2rss_lambda.py
+### Local development
+```bash
+uv sync --locked
+uv run --locked ruff check .
+uv run --locked ruff format --check .
+uv run --locked python -m unittest discover -s tests
 ```
 
 ### Deployment
-Manual deployment via AWS Console or CLI:
-1. Package the Lambda function code
-2. Upload to AWS Lambda
-3. Configure environment variables
-4. Set up API Gateway with routes:
-   - `/event/{event_id}`
-   - `/address/{address}`
+The Lambda is deployed manually with `scripts/deploy.sh lambda`. The script
+exports the locked production dependencies, builds an x86_64-compatible zip,
+uploads it to the existing `POAP2RSS` function, aligns the Lambda runtime with
+`.python-version`, and removes obsolete layers.
+
+Verify the deployed configuration without changing it:
+
+```bash
+aws lambda get-function-configuration \
+  --region us-east-1 \
+  --function-name POAP2RSS \
+  --query '{Runtime:Runtime,Handler:Handler,Architectures:Architectures,State:State,LastUpdateStatus:LastUpdateStatus}'
+```
+
+API Gateway exposes `/event/{event_id}` and `/address/{address}` at
+`https://app.poap2rss.com`.
 
 ## Code Conventions
 
