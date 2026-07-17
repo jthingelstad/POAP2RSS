@@ -3,29 +3,43 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [www/**]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  backend:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.14"
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv lock --check
+      - run: uv run --locked ruff check src tests
+      - run: uv run --locked ruff format --check src tests
+      - name: Audit locked dependencies
+        run: |
+          uv export --locked --no-dev --no-emit-project --format requirements-txt > /tmp/requirements.txt
+          uvx --from pip-audit==2.10.1 pip-audit --requirement /tmp/requirements.txt --disable-pip
+      - run: uv run --locked python -m unittest discover -s tests -p 'test_*.py' -q
+
+  website:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: npm
           cache-dependency-path: www/package-lock.json
       - run: npm ci
@@ -38,5 +52,17 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: www/_site
+
+  deploy:
+    needs: [backend, website]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v5
